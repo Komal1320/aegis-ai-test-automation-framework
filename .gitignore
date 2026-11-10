@@ -1,0 +1,17 @@
+target/
+.idea/
+*.iml
+.env
+.DS_Store
+allure-results/
+allure-report/
+screenshots/
+logs/
+
+# Secrets and local configuration
+.env.*
+!.env.example
+secrets/
+credentials/
+*.pem
+*.key

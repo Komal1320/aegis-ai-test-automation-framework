@@ -1,0 +1,33 @@
+services:
+  nopcommerce:
+    image: nopcommerceteam/nopcommerce:5.00.0
+    container_name: aegis-nopcommerce
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    ports:
+      - "8080:80"
+    volumes:
+      - nopcommerce_files:/var/www/html
+    restart: unless-stopped
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: aegis-sqlserver
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Express"
+      MSSQL_SA_PASSWORD: "Aegis_LocalDev!2026"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P 'Aegis_LocalDev!2026' -Q 'SELECT 1' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+      start_period: 30s
+    restart: unless-stopped
+volumes:
+  nopcommerce_files:
+  sqlserver_data:
